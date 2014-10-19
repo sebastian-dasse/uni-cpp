@@ -12,21 +12,16 @@ float to_float(fix_point value) {
     return float(value.data) / (1 << Q);
 };
 
-// TODO -> only integer operations allowed
 float floor(fix_point value) {
-//    float sign = 1;
-//    if (value.data & 0x80000000) {
-//        sign = -1;
-//    }
-
-//    return (float(value.data & 0x7fff0000) / (1 << Q));
-    return (float(value.data >> Q));
+    return float(value.data / (1 << Q));
 };
 
-// TODO -> not working correctly
-// TODO -> only integer operations allowed
 float frac(fix_point value) {
-    return (double(value.data & 0xffff) / (1 << Q));
+    // correct results for negative values
+    if (value.data < 0) {
+        return float(-value.data & 0xffff) / (1 << Q);
+    }
+    return float(value.data & 0xffff) / (1 << Q);
 };
 
 bool equals(fix_point lhs, fix_point rhs) {
@@ -61,13 +56,13 @@ fix_point sub(fix_point lhs, fix_point rhs) {
 
 fix_point mul(fix_point lhs, fix_point rhs) {
     std::int64_t temp = std::int64_t(lhs.data) * std::int64_t(rhs.data);
-//    temp += (1 << (Q-1)); // mid values are rounded up
+//    temp += (1 << (Q-1)); // round up mid values
     return { std::int32_t(temp >> 16) };
 };
 
 fix_point div(fix_point lhs, fix_point rhs) {
     std::int64_t temp = std::int64_t(lhs.data) << Q;
-//    temp += rhs.data / 2; // mid values are rounded up
+//    temp += rhs.data / 2; // round up mid values
     std::int64_t result = temp / std::int64_t(rhs.data);
     return { std::int32_t(result) };
 };

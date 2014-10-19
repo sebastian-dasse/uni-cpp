@@ -1,75 +1,59 @@
-#include <iostream>
-#include <cstdint>
-#include "fix_point.h"
+//#include <iostream>
+//#include <cstdint>
+//#include "fix_point.h"
 
-using namespace std;
+//using namespace std;
 
-int main()
-{
-    cout << "Hello World!" << endl;
-//    cout << (7 * (1 << 16) * 3 * (1 << 16)) << endl;
-//    cout << sizeof(std::int32_t) << endl;
-//    cout << sizeof(std::int64_t) << endl;
-//    cout << sizeof(float) << endl;
-//    cout << (171 / 16) << endl;
-//    cout << (171 >> 4) << endl;
-//    std::int32_t res = (1.23 * (double) (1 << 16));
-//    res >>= 16;
-//    cout << res << endl;
-//    res = (int) 0xffff0000 + 0xffff;
-//    res = (int) 0xffff - 0ff;
-//    res = (1 << 16)-1;
-//    res >>= 16;
-//    cout << res << endl;
-//    cout << (1 << 16) << endl;
+//int main()
+//{
+////    float fl = 123.0125f;
+////    float fl = -123.456f;
+////    float fl = -4.2f;
+//    float fl1 = 3.0125f;
+//    float fl2 = -3.0125f;
+////    float fl2 = 9234.5678f;
 
-    float fl = -123.456f;
-    fix_point fp = to_fix_point(fl);
-    fix_point fp2 = to_fix_point(9234.5678f);
-    fix_point fp3 = to_fix_point(7);
-//    fix_point fp4 = to_fix_point(3);
-    fix_point fp4 = to_fix_point(-3.2);
+//    fix_point fp1 = to_fix_point(fl1);
+//    fix_point fp2 = to_fix_point(fl2);
 
-    cout << "float        = " << fl << endl;
-    cout << "fp.data      = " << fp.data << endl;
-    cout << "to_float(fp) = " << to_float(fp) << endl;
-    cout << "floor(fp)    = " << floor(fp) << endl;
-    cout << "frac(fp)     = " << frac(fp) << endl;
+////    fix_point fp3 = to_fix_point(7);
+////    fix_point fp4 = to_fix_point(3);
+////    fix_point fp4 = to_fix_point(-3.2);
 
-    cout << "to_float(fp) = " << to_float(fp) << endl;
-    cout << "to_float(fp2) = " << to_float(fp2) << endl;
+//    cout << "float 1       = " << fl1 << endl;
+//    cout << "fp1.data      = " << fp1.data << endl;
+//    cout << "to_float(fp1) = " << to_float(fp1) << endl;
+//    cout << "floor(fp1)    = " << floor(fp1) << endl;
+//    cout << "frac(fp1)     = " << frac(fp1) << endl;
 
-//    cout << "equals(fp, fp)  = " << equals(fp, fp) << endl;
-//    cout << "equals(fp, fp2) = " << equals(fp, fp2) << endl;
-//    cout << "equals(fp2, fp) = " << equals(fp2, fp) << endl;
+//    cout << "float 2       = " << fl2 << endl;
+//    cout << "fp2.data      = " << fp2.data << endl;
+//    cout << "to_float(fp2) = " << to_float(fp2) << endl;
+//    cout << "floor(fp2)    = " << floor(fp2) << endl;
+//    cout << "frac(fp2)     = " << frac(fp2) << endl;
 
-//    cout << "less_than(fp, fp)  = " << less_than(fp, fp) << endl;
-//    cout << "less_than(fp, fp2) = " << less_than(fp, fp2) << endl;
-//    cout << "less_than(fp2, fp) = " << less_than(fp2, fp) << endl;
+////    cout << "to_float(fp) = " << to_float(fp) << endl;
+////    cout << "to_float(fp2) = " << to_float(fp2) << endl;
 
-    cout << "fp3.data = " << fp3.data << endl;
-    cout << "fp4.data = " << fp4.data << endl;
-    cout << "to_float(fp3) = " << to_float(fp3) << endl;
-    cout << "to_float(fp4) = " << to_float(fp4) << endl;
+////    cout << "fp3.data = " << fp3.data << endl;
+////    cout << "fp4.data = " << fp4.data << endl;
+////    cout << "to_float(fp3) = " << to_float(fp3) << endl;
+////    cout << "to_float(fp4) = " << to_float(fp4) << endl;
 
-    cout << "to_float(add(fp3, fp4)) = " << to_float(add(fp3, fp4)) << endl;
-    cout << "to_float(sub(fp3, fp4)) = " << to_float(sub(fp3, fp4)) << endl;
-    cout << "to_float(mul(fp3, fp4)) = " << to_float(mul(fp3, fp4)) << endl;
-    cout << "to_float(div(fp3, fp4)) = " << to_float(div(fp3, fp4)) << endl;
+////    cout << "to_float(add(fp3, fp4)) = " << to_float(add(fp3, fp4)) << endl;
+////    cout << "to_float(sub(fp3, fp4)) = " << to_float(sub(fp3, fp4)) << endl;
+////    cout << "to_float(mul(fp3, fp4)) = " << to_float(mul(fp3, fp4)) << endl;
+////    cout << "to_float(div(fp3, fp4)) = " << to_float(div(fp3, fp4)) << endl;
 
-    const fix_point fpx = to_fix_point(-4.0f);
-    cout << "floor(fpx) = " << floor(fpx) << endl;
+////    const fix_point fp01 = to_fix_point(6.375f);
+////    const fix_point fp02 = to_fix_point(-4.0f);
 
+////    cout << to_float(div(fp01, fp02)) << endl;
+////    cout << -1.59375f << endl;
 
-    const fix_point fp01 = to_fix_point(6.375f);
-    const fix_point fp02 = to_fix_point(-4.0f);
+////    cout << to_float(mul(fp01, fp02)) << endl;
+////    cout << -25.5f << endl;
 
-    cout << to_float(div(fp01, fp02)) << endl;
-    cout << -1.59375f << endl;
-
-    cout << to_float(mul(fp01, fp02)) << endl;
-    cout << -25.5f << endl;
-
-    return 0;
-}
+//    return 0;
+//}
 
