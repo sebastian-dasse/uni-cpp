@@ -12,5 +12,5 @@ include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
-    fix_point.h
+    fix_point.hpp
 

@@ -111,10 +111,10 @@ compiler_clean:
 
 ####### Compile
 
-release/main.o: ../UE01-2/main.cpp ../UE01-2/fix_point.h
+release/main.o: ../UE01-2/main.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\UE01-2\main.cpp
 
-release/fix_point.o: ../UE01-2/fix_point.cpp ../UE01-2/fix_point.h
+release/fix_point.o: ../UE01-2/fix_point.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\fix_point.o ..\UE01-2\fix_point.cpp
 
 release/test_fix_point_oo.o: ../UE01-2/test_fix_point_oo.cpp 
