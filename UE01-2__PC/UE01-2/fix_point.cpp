@@ -7,31 +7,30 @@ static const int Q_ONE = 1 << Q; // 1 expressed as 2**Q
 fix_point::fix_point(float f)
     : m_data(std::int32_t(f * Q_ONE)) {}
 
-fix_point::fix_point(double f)
-    : m_data(std::int32_t(f * Q_ONE)) {}
+//fix_point::fix_point(double f)
+//    : m_data(std::int32_t(f * Q_ONE)) {}
 
 fix_point::fix_point(std::int32_t data)
     : m_data(data) {}
 
 //-- not necessary?
-//fix_point fix_point::operator =(float f) {
-//    return fix_point(f);
-//}
+fix_point fix_point::operator=(float f) {
+    return fix_point(f);
+}
 
 bool fix_point::operator==(fix_point other) const {
     return m_data == other.m_data;
 }
 
 bool fix_point::operator==(float other) const {
-    return float(*this) == other;
+    return *this == fix_point(other);
 }
 
 bool fix_point::operator==(double other) const {
-    return float(*this) == other;
+    return *this == float(other);
 }
 
 bool fix_point::operator!=(fix_point other) const {
-//    return m_data != other.m_data;
     return !(*this == other);
 }
 
@@ -40,65 +39,47 @@ bool fix_point::operator<(fix_point other) const {
 }
 
 bool fix_point::operator>(fix_point other) const {
-    return other.m_data < m_data;
+    return other < *this;
 }
 
 bool fix_point::operator<=(fix_point other) const {
-    return !(m_data > other.m_data);
+    return !(*this > other);
 }
 
 bool fix_point::operator>=(fix_point other) const {
-    return !(m_data < other.m_data);
+    return !(*this < other);
 }
 
 fix_point fix_point::operator+(fix_point other) const {
-//    return fix_point(m_data + other.m_data);
     return fix_point(m_data) += other;
-}
-
-fix_point fix_point::operator-(fix_point other) const {
-//    return fix_point(m_data - other.m_data);
-    return fix_point(m_data) -= other;
-}
-
-fix_point fix_point::operator*(fix_point other) const {
-//    std::int64_t tmp = std::int64_t(m_data) * std::int64_t(other.m_data);
-//    return fix_point(std::int32_t(tmp >> Q));
-    return fix_point(m_data) *= other;
-}
-
-fix_point fix_point::operator/(fix_point other) const {
-//    std::int64_t tmp = std::int64_t(m_data) << Q;
-//    std::int64_t result = tmp / std::int64_t(other.m_data);
-//    return fix_point(std::int32_t(result));
-    return fix_point(m_data) /= other;
 }
 
 fix_point fix_point::operator+=(fix_point other) {
     return m_data += other.m_data;
 }
 
+fix_point fix_point::operator-(fix_point other) const {
+    return fix_point(m_data) -= other;
+}
+
 fix_point fix_point::operator-=(fix_point other) {
     return m_data -= other.m_data;
 }
 
+fix_point fix_point::operator*(fix_point other) const {
+    return fix_point(m_data) *= other;
+}
+
 fix_point fix_point::operator*=(fix_point other) {
-    std::int64_t tmp = std::int64_t(m_data) * std::int64_t(other.m_data);
+    return m_data = std::int32_t( (std::int64_t(m_data) * std::int64_t(other.m_data)) >> Q );
+}
 
-//    // TODO ok ???
-//    tmp += (1 << (Q-1)); // round up mid values
-
-    return m_data = std::int32_t(tmp >> Q);
+fix_point fix_point::operator/(fix_point other) const {
+    return fix_point(m_data) /= other;
 }
 
 fix_point fix_point::operator/=(fix_point other) {
-    std::int64_t tmp = std::int64_t(m_data) << Q;
-    std::int64_t result = tmp / std::int64_t(other.m_data);
-
-//    // TODO ok ???
-//    tmp += other.m_data / 2; // round up mid values
-
-    return m_data = std::int32_t(result);
+    return m_data = std::int32_t( (std::int64_t(m_data) << Q) / std::int64_t(other.m_data) );
 }
 
 fix_point::operator float() const {
@@ -106,7 +87,7 @@ fix_point::operator float() const {
 }
 
 fix_point::operator int() const {
-    return float(m_data / Q_ONE);
+    return int(m_data / Q_ONE);
 }
 
 float fix_point::floor() const {
@@ -114,24 +95,21 @@ float fix_point::floor() const {
 }
 
 float fix_point::frac() const {
-    if (m_data < 0) {
-        return float(-m_data & 0xffff) / Q_ONE;
-    }
-    return float(m_data & 0xffff) / Q_ONE;
+    return float( (m_data < 0 ? -m_data : m_data) & 0xffff ) / Q_ONE;
 }
 
 fix_point fix_point::operator++() {
     return m_data += Q_ONE;
 }
 
-fix_point fix_point::operator--() {
-    return m_data -= Q_ONE;
-}
-
 fix_point fix_point::operator++(int) {
     fix_point tmp = fix_point(m_data);
     m_data += Q_ONE;
     return tmp;
+}
+
+fix_point fix_point::operator--() {
+    return m_data -= Q_ONE;
 }
 
 fix_point fix_point::operator--(int) {
@@ -167,9 +145,11 @@ static fix_point fac[] = {
     fix_point(479001600.f)
 };
 
+
 fix_point sin(fix_point x) {
 
     //-- TODO check if x inside [0, pi]
+
     if (x > pi_half) {
         return sin(pi - x);
     } else if (x > pi) {
