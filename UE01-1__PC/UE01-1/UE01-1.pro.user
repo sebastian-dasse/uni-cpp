@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.2.2, 2014-10-23T23:49:17. -->
+<!-- Written by QtCreator 3.2.2, 2014-11-03T21:56:51. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -223,7 +223,7 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">UE01-1</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">UE01-12</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">UE01-1</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/IT/cpp.project/cpp-ue/UE01-1__PC/UE01-1/UE01-1.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">UE01-1.pro</value>
