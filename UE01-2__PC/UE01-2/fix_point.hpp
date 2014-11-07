@@ -43,10 +43,10 @@ private:
 };
 
 
+float floor(fix_point value);
+float frac(fix_point value);
 fix_point sin(fix_point x);
 fix_point cos(fix_point x);
-
-float frac(fix_point value);
 
 
 #endif // FIX_POINT_H

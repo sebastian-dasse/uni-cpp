@@ -139,10 +139,16 @@ fix_point fix_point::pow(int exp) const {
     if (exp == 0) {
         return ONE;
     }
-    if (exp < 0) {
-        return ONE / this->pow(-exp);
-    }
-    return *this * this->pow(exp-1);
+    return exp < 0 ? ONE / this->pow(-exp) : *this * this->pow(exp-1);
+}
+
+
+float floor(fix_point value) {
+    return value.floor();
+}
+
+float frac(fix_point value) {
+    return value.frac();
 }
 
 
@@ -192,9 +198,4 @@ fix_point cos(fix_point x) {
         return cos(TWO_TIMES_PI - x);
     }
     return taylor(x, 4, 0);
-}
-
-
-float frac(fix_point value) {
-    return value.frac();
 }

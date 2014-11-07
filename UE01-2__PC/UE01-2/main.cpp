@@ -74,6 +74,12 @@
 ////    cout << endl;
 ////    cout << float(fix_point(17.f) % fix_point(5.f)) << endl;
 ////    cout << endl;
+////    cout << floor(fix_point(12.34f)) << endl;
+////    cout << frac(fix_point(12.34f)) << endl;
+////    cout << float(fix_point(2.f).pow(8)) << endl;
+////    cout << float(fix_point(2.f).pow(0)) << endl;
+////    cout << float(fix_point(2.f).pow(-8)) << endl;
+////    cout << endl;
 
 //    float pi = 3.14159;
 //    float v0 =       .0f + 0.2f;
