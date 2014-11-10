@@ -189,6 +189,5 @@ export (LIBS)
 export (QMAKE_EXTRA_TARGETS)
 }
 
-HEADERS += \
-    $$PWD/fix_point_collection.h
+HEADERS +=
 
