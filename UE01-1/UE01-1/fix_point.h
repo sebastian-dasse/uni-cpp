@@ -3,8 +3,6 @@
 #ifndef FIX_POINT_H
 #define FIX_POINT_H
 
-#endif // FIX_POINT_H
-
 struct fix_point
 {
     std::int32_t data;
@@ -23,3 +21,5 @@ fix_point add(fix_point lhs, fix_point rhs);
 fix_point sub(fix_point lhs, fix_point rhs);
 fix_point mul(fix_point lhs, fix_point rhs);
 fix_point div(fix_point lhs, fix_point rhs);
+
+#endif // FIX_POINT_H

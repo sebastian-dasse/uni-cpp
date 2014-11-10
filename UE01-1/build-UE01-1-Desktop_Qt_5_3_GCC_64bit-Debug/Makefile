@@ -46,11 +46,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../UE01-1/main.cpp \
-		../UE01-1/test_fix_point.cpp \
-		../UE01-1/fix_point.cpp 
+		../UE01-1/fix_point.cpp \
+		../UE01-1/test_fix_point.cpp 
 OBJECTS       = main.o \
-		test_fix_point.o \
-		fix_point.o
+		fix_point.o \
+		test_fix_point.o
 DIST          = /home/sebastian/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/sebastian/Qt/5.3/gcc_64/mkspecs/common/shell-unix.conf \
 		/home/sebastian/Qt/5.3/gcc_64/mkspecs/common/unix.conf \
@@ -155,8 +155,8 @@ DIST          = /home/sebastian/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/sebastian/Qt/5.3/gcc_64/mkspecs/features/yacc.prf \
 		/home/sebastian/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
 		../UE01-1/UE01-1.pro ../UE01-1/main.cpp \
-		../UE01-1/test_fix_point.cpp \
-		../UE01-1/fix_point.cpp
+		../UE01-1/fix_point.cpp \
+		../UE01-1/test_fix_point.cpp
 QMAKE_TARGET  = UE01-1
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = UE01-1
@@ -435,11 +435,11 @@ compiler_clean:
 main.o: ../UE01-1/main.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../UE01-1/main.cpp
 
-test_fix_point.o: ../UE01-1/test_fix_point.cpp ../UE01-1/fix_point.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o test_fix_point.o ../UE01-1/test_fix_point.cpp
-
 fix_point.o: ../UE01-1/fix_point.cpp ../UE01-1/fix_point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fix_point.o ../UE01-1/fix_point.cpp
+
+test_fix_point.o: ../UE01-1/test_fix_point.cpp ../UE01-1/fix_point.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o test_fix_point.o ../UE01-1/test_fix_point.cpp
 
 ####### Install
 
