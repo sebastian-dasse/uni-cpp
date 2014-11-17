@@ -1,5 +1,5 @@
 //#include <cstdint>
-#include "fix_point.hpp"
+#include "fix_point.h"
 
 static const int Q = 16; // number of bits of the fractional part
 static const int Q_ONE = 1 << Q; // 1 expressed as 2**Q
@@ -9,6 +9,9 @@ static const fix_point PI = fix_point(3.14159f);
 static const fix_point PI_HALF = PI * fix_point(0.5f);
 static const fix_point THREE_TIMES_PI_HALF = PI * fix_point(1.5f);
 static const fix_point TWO_TIMES_PI = PI * fix_point(2.f);
+
+// TODO okay to have standard constructor???
+fix_point::fix_point() {}
 
 fix_point::fix_point(float f)
     : m_data(std::int32_t(f * Q_ONE)) {}

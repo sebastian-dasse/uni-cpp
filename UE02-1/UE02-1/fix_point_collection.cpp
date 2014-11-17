@@ -5,7 +5,7 @@
   welcher eine leere Sammlung erstellt, ...
 */
 fix_point_collection::fix_point_collection() {
-    coll = nullptr;
+    m_size = 0;
 }
 
 /**
@@ -13,7 +13,7 @@ fix_point_collection::fix_point_collection() {
   Ressourcen ordnungsgemäß wieder freigegeben werden.
 */
 fix_point_collection::~fix_point_collection() {
-    coll = nullptr;
+    delete[] m_coll;
 }
 
 /**
@@ -23,15 +23,11 @@ fix_point_collection::~fix_point_collection() {
   wie für das Speichern aller Elemente benötigt wird.
 */
 fix_point fix_point_collection::push_back(float val) {
-    node *tail = coll;
-    while (tail->next != nullptr) {
-        tail = tail->next;
-    }
-    node *n = new node;
-    n->val = val;
-    n->next = nullptr;
-    tail->next = n;
-    return val;
+    node *newNode = new node;
+    newNode->val = new fix_point(val);
+    newNode->next = m_coll;
+    m_coll = newNode;
+    m_size++;
 }
 
 /**
@@ -40,19 +36,15 @@ fix_point fix_point_collection::push_back(float val) {
   den nicht benötigten Speicher freizugeben.
 */
 fix_point fix_point_collection::pop_back() {
-    if (coll == nullptr) {
-        return fix_point(-1.f); // FIXME return null or better throw an exception?
+    if (m_coll == nullptr) {
+        return -1111.f; // FIXME return null or better throw an exception?
     }
-    node *tail = coll;
-    node *preTail = nullptr;
-    while (tail->next != nullptr) {
-        preTail = tail;
-        tail = tail->next;
-    }
-    fix_point val = tail->val;
-    preTail->next = nullptr;
-    delete tail;
-    return val;
+    fix_point fp = *m_coll->val;
+    node *oldNode = m_coll;
+    m_coll = m_coll->next;
+    delete oldNode;
+    m_size--;
+    return fp;
 }
 
 /**
@@ -63,15 +55,18 @@ fix_point fix_point_collection::pop_back() {
   die Lesezugriff auf die Elemente einer als konstant
   deklarierten Sammlung ermöglicht.
 */
-fix_point fix_point_collection::operator[](int index) const {
-    if (index < 0 || index < int(size())) {
-        return fix_point(-1.f); // FIXME return null or better throw an exception?
+const fix_point& fix_point_collection::operator[](int index) const {
+    if (index < 0 || m_size <= index) {
+        return *(new fix_point(-1111.f)); // FIXME return null or better throw an exception?
     }
-    node *n = coll;
-    for (int i = 0; i <= index; i++) {
+    node *n = m_coll;
+    index++;
+    while (index < m_size) {
+//    while (n != nullptr) {
         n = n->next;
+        index++;
     }
-    return n->val;
+    return *n->val;
 }
 
 /**
@@ -81,7 +76,13 @@ fix_point fix_point_collection::operator[](int index) const {
   sollte ausschließlich auf Ganzzahlarithmetik basieren.
 */
 fix_point fix_point_collection::operator[](fix_point index) const {
-
+    if (float(index) < 0.f || float(m_size-1) < float(index)) {
+        return fix_point(-1111.f); // FIXME return null or better throw an exception?
+    }
+    int le = index.floor();
+    int ri = le + 1;
+    fix_point f = index.frac();
+    return (fix_point(1.f) - f) * (*this)[le] + f * (*this)[ri];
 }
 
 /**
@@ -89,8 +90,28 @@ fix_point fix_point_collection::operator[](fix_point index) const {
   über die es möglich ist, ein bestimmtes Elemente der
   Sammlung zu verändern.
 */
-fix_point fix_point_collection::operator[](int index) {
+fix_point& fix_point_collection::operator[](int index) {
 
+    // TODO
+    // if the pointer solution is alright -> use delegation for one of the two twin methods
+
+    if (index < 0 || m_size <= index) {
+//        return fix_point(-1111.f); // FIXME return null or better throw an exception?
+        fix_point f = fix_point(-1111.f); // FIXME return null or better throw an exception?
+        return f;
+//        return new fix_point(-1111.f); // FIXME return null or better throw an exception?
+    }
+    node *n = m_coll;
+    index++;
+    while (index < m_size) {
+//    while (n != nullptr) {
+        n = n->next;
+        index++;
+    }
+    return *n->val;
+
+//    return fix_point(-0.123459f);
+//    return *(new fix_point(-0.123459f));
 }
 
 /**
@@ -98,20 +119,32 @@ fix_point fix_point_collection::operator[](int index) {
   zurückliefern.
 */
 size_t fix_point_collection::size() const {
-    return size_t(-1); // TODO not implemented!
+    return m_size;
 }
 
 /**
   count_value() , um die Häufigkeit einer bestimmten Zahl
   in der Sammlung zu bestimmen.
 */
-fix_point sum(fix_point_collection coll) {
-
+size_t count_value(fix_point_collection &coll, float f) {
+    int count = 0;
+    for (int i = 0; i < coll.size(); i++) {
+        if (coll[i] == f) {
+            count++;
+        }
+    }
+    return count;
 }
 
 /**
   sum() , um alle Elemente der Sammlung zu summieren.
 */
-size_t count_value(fix_point_collection coll, float f) {
-
+fix_point sum(fix_point_collection &coll) {
+    fix_point sum = fix_point(0.f);
+    for (int i = 0; i < coll.size(); i++) {
+        sum += coll[i];
+//        sum += *coll[i];
+    }
+    return sum;
+//    return fix_point(-0.123459f);
 }
