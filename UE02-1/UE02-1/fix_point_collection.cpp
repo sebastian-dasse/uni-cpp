@@ -1,45 +1,39 @@
 #include "fix_point_collection.h"
 
 /**
-  Das Modul sollte über einen Konstruktor verfügen,
-  welcher eine leere Sammlung erstellt, ...
-*/
+ * Constructs an empty collection.
+ */
 fix_point_collection::fix_point_collection() {
     m_size = 0;
 }
 
 /**
-  ... sowie einen Destruktur der dafür sorgt, dass alle
-  Ressourcen ordnungsgemäß wieder freigegeben werden.
-*/
+ * Destructs the collection and releases all its resources.
+ */
 fix_point_collection::~fix_point_collection() {
     delete[] m_coll;
 }
 
 /**
-  Implementieren Sie eine Methoden push_backzum Hinzufügen
-  eines Elementes am Ende der Sammlung. Diese Methode sollte
-  sicherstellen, dass genau soviel Speicher allokiert wird,
-  wie für das Speichern aller Elemente benötigt wird.
-*/
-fix_point fix_point_collection::push_back(float val) {
+ * Pushes an element to the end of the collection.
+ */
+void fix_point_collection::push_back(fix_point val) {
     node *newNode = new node;
-    newNode->val = new fix_point(val);
+    newNode->val = val;
     newNode->next = m_coll;
     m_coll = newNode;
     m_size++;
 }
 
 /**
-  Erstellen Sie eine Methoden pop_back mit der es ermöglicht
-  wird das letzte Element aus der Sammlung zu entfernen und
-  den nicht benötigten Speicher freizugeben.
-*/
+ * Removes the element from the end of the collection and returns it.
+ */
 fix_point fix_point_collection::pop_back() {
-    if (m_coll == nullptr) {
-        return -1111.f; // FIXME return null or better throw an exception?
+    if (m_size == 0) {
+//    if (m_coll == nullptr) { // QUESTION better this way?
+        throw "Underflow: cannot pop back from an empty";
     }
-    fix_point fp = *m_coll->val;
+    fix_point fp = m_coll->val;
     node *oldNode = m_coll;
     m_coll = m_coll->next;
     delete oldNode;
@@ -48,88 +42,79 @@ fix_point fix_point_collection::pop_back() {
 }
 
 /**
-  Implementieren Sie 3 Versionen des Index-Operators
-  operator[] um auf die Elemente der Sammlung über einen
-  Index Zugriff zu erhalten:
-  a) eine “Readonly”-Variante mit einem ganzzahligen Index,
-  die Lesezugriff auf die Elemente einer als konstant
-  deklarierten Sammlung ermöglicht.
-*/
+ * Returns the element at the specified index for read access only.
+ * This method is available for a const fix_point_collection.
+ */
 const fix_point& fix_point_collection::operator[](int index) const {
+
+    // QUESTION how to delegate duplicate code of overloaded const
+    //          function to a non-public helper function?
+
     if (index < 0 || m_size <= index) {
-        return *(new fix_point(-1111.f)); // FIXME return null or better throw an exception?
+        throw "Index out of bounds";
     }
     node *n = m_coll;
     index++;
     while (index < m_size) {
-//    while (n != nullptr) {
+//    while (n != nullptr) { // QUESTION better this way?
         n = n->next;
         index++;
     }
-    return *n->val;
+    return n->val;
 }
 
 /**
-  b) eine 2. “Readonly”-Variante mit einer Festkommazahl
-  als Index, wobei das Ergebnis eine lineare Interpolation
-  zwischen den Elementen darstellt. Diese Interpolation
-  sollte ausschließlich auf Ganzzahlarithmetik basieren.
-*/
+ * Returns the value resulting from linear interpolation between
+ * the two elements at the indices closest to the specified
+ * fix_point index.
+ */
 fix_point fix_point_collection::operator[](fix_point index) const {
-    if (float(index) < 0.f || float(m_size-1) < float(index)) {
-        return fix_point(-1111.f); // FIXME return null or better throw an exception?
+    if (index < fix_point(0.f) || fix_point(m_size-1.f) < index) {
+        throw "Index out of bounds";
     }
-    int le = index.floor();
-    int ri = le + 1;
+    int left = index.floor();
+    int right = left + 1;
     fix_point f = index.frac();
-    return (fix_point(1.f) - f) * (*this)[le] + f * (*this)[ri];
+    return (fix_point(1.f) - f) * (*this)[left] + f * (*this)[right];
 }
 
 /**
-  c) und eine 3. Variante mit einem ganzzahligen Index,
-  über die es möglich ist, ein bestimmtes Elemente der
-  Sammlung zu verändern.
-*/
+ * Returns the element at the specified index for read and write access.
+ */
 fix_point& fix_point_collection::operator[](int index) {
-
-    // TODO
-    // if the pointer solution is alright -> use delegation for one of the two twin methods
-
     if (index < 0 || m_size <= index) {
-//        return fix_point(-1111.f); // FIXME return null or better throw an exception?
-        fix_point f = fix_point(-1111.f); // FIXME return null or better throw an exception?
-        return f;
-//        return new fix_point(-1111.f); // FIXME return null or better throw an exception?
+        throw "Index out of bounds";
     }
     node *n = m_coll;
     index++;
     while (index < m_size) {
-//    while (n != nullptr) {
+//    while (n != nullptr) { // QUESTION better this way?
         n = n->next;
         index++;
     }
-    return *n->val;
-
-//    return fix_point(-0.123459f);
-//    return *(new fix_point(-0.123459f));
+    return n->val;
 }
 
 /**
-  Eine weitere Methode size() sollte die Anzahl der Elemente in der Sammlung
-  zurückliefern.
-*/
+ * Returns the size of the collection.
+ */
 size_t fix_point_collection::size() const {
     return m_size;
 }
 
 /**
-  count_value() , um die Häufigkeit einer bestimmten Zahl
-  in der Sammlung zu bestimmen.
-*/
-size_t count_value(fix_point_collection &coll, float f) {
+ * Returns the number of occurrences of the specified value in the
+ * collection.
+ */
+size_t count_value(fix_point_collection &coll, fix_point value) {
+
+    // QUESTION not very efficient to iterate over list - 2 alternatives:
+    // 1. -> fix_point_collection should export an iterator
+    // 2. -> fix_point_collection should use a dynamic array interally - but how?
+
     int count = 0;
-    for (int i = 0; i < coll.size(); i++) {
-        if (coll[i] == f) {
+    for (int i = 0; i < int(coll.size()); i++) {
+        if (coll[i] == value) {
             count++;
         }
     }
@@ -137,14 +122,17 @@ size_t count_value(fix_point_collection &coll, float f) {
 }
 
 /**
-  sum() , um alle Elemente der Sammlung zu summieren.
-*/
+ * Returns the sum of all elements of the collection.
+ */
 fix_point sum(fix_point_collection &coll) {
-    fix_point sum = fix_point(0.f);
-    for (int i = 0; i < coll.size(); i++) {
+
+    // QUESTION not very efficient to iterate over list - 2 alternatives:
+    // 1. -> fix_point_collection should export an iterator
+    // 2. -> fix_point_collection should use a dynamic array interally - but how?
+
+    fix_point sum = 0.f;
+    for (int i = 0; i < int(coll.size()); i++) {
         sum += coll[i];
-//        sum += *coll[i];
     }
     return sum;
-//    return fix_point(-0.123459f);
 }
