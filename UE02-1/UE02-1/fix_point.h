@@ -4,7 +4,8 @@
 #define FIX_POINT_H
 
 
-struct fix_point {
+class fix_point {
+public:
     fix_point();
     fix_point(float f);
     fix_point(double d);

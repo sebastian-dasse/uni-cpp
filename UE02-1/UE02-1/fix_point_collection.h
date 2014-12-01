@@ -7,11 +7,12 @@
 using std::size_t;
 
 struct node {
-    fix_point val; // QUESTION should val be a pointer???
+    fix_point val;
     node *next;
 };
 
-struct fix_point_collection {
+class fix_point_collection {
+public:
     /**
      * Constructs an empty collection.
      */
@@ -54,6 +55,9 @@ struct fix_point_collection {
      * Returns the size of the collection.
      */
     size_t size() const;
+
+    friend size_t count_value(fix_point_collection &coll, fix_point value);
+    friend fix_point sum(fix_point_collection &coll);
 
 private:
     node *m_coll;

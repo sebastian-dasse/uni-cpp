@@ -31,8 +31,7 @@ int main()
     assert(collection[index] == 3.1875f);
 
     // override 4th element
-    collection[3] = -1.25f; // DOES NOT WORK
-//    collection[3] = fix_point(-1.25f); // WORKS
+    collection[3] = -1.25f;
     assert(collection[3] == -1.25f);
 
     // pop last element

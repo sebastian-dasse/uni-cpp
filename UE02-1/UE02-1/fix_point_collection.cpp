@@ -3,15 +3,19 @@
 /**
  * Constructs an empty collection.
  */
-fix_point_collection::fix_point_collection() {
-    m_size = 0;
-}
+fix_point_collection::fix_point_collection()
+    : m_coll(nullptr), m_size(0) {}
 
 /**
  * Destructs the collection and releases all its resources.
  */
 fix_point_collection::~fix_point_collection() {
-    delete[] m_coll;
+    node *n = m_coll;
+    while(n != nullptr) {
+        node *old = n;
+        n = n->next;
+        delete old;
+    }
 }
 
 /**
@@ -30,7 +34,6 @@ void fix_point_collection::push_back(fix_point val) {
  */
 fix_point fix_point_collection::pop_back() {
     if (m_size == 0) {
-//    if (m_coll == nullptr) { // QUESTION better this way?
         throw "Underflow: cannot pop back from an empty";
     }
     fix_point fp = m_coll->val;
@@ -49,16 +52,16 @@ const fix_point& fix_point_collection::operator[](int index) const {
 
     // QUESTION how to delegate duplicate code of overloaded const
     //          function to a non-public helper function?
+    // TODO -> const_cast<*>(this)operator[]
+    //          oder so ähnlich
 
     if (index < 0 || m_size <= index) {
         throw "Index out of bounds";
     }
     node *n = m_coll;
     index++;
-    while (index < m_size) {
-//    while (n != nullptr) { // QUESTION better this way?
+    for ( ; index < m_size; index++) {
         n = n->next;
-        index++;
     }
     return n->val;
 }
@@ -87,10 +90,8 @@ fix_point& fix_point_collection::operator[](int index) {
     }
     node *n = m_coll;
     index++;
-    while (index < m_size) {
-//    while (n != nullptr) { // QUESTION better this way?
+    for ( ; index < m_size; index++) {
         n = n->next;
-        index++;
     }
     return n->val;
 }
@@ -107,14 +108,9 @@ size_t fix_point_collection::size() const {
  * collection.
  */
 size_t count_value(fix_point_collection &coll, fix_point value) {
-
-    // QUESTION not very efficient to iterate over list - 2 alternatives:
-    // 1. -> fix_point_collection should export an iterator
-    // 2. -> fix_point_collection should use a dynamic array interally - but how?
-
     int count = 0;
-    for (int i = 0; i < int(coll.size()); i++) {
-        if (coll[i] == value) {
+    for (node *n = coll.m_coll; n != nullptr; n++) {
+        if (n->val == value) {
             count++;
         }
     }
@@ -125,14 +121,9 @@ size_t count_value(fix_point_collection &coll, fix_point value) {
  * Returns the sum of all elements of the collection.
  */
 fix_point sum(fix_point_collection &coll) {
-
-    // QUESTION not very efficient to iterate over list - 2 alternatives:
-    // 1. -> fix_point_collection should export an iterator
-    // 2. -> fix_point_collection should use a dynamic array interally - but how?
-
     fix_point sum = 0.f;
-    for (int i = 0; i < int(coll.size()); i++) {
-        sum += coll[i];
+    for (node *n = coll.m_coll; n != nullptr; n++) {
+        sum += n->val;
     }
     return sum;
 }
