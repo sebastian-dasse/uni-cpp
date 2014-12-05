@@ -1,5 +1,8 @@
 #include "fix_point_collection.h"
 
+#include <iostream>
+using namespace std;
+
 /**
  * Constructs an empty collection.
  */
@@ -10,7 +13,7 @@ fix_point_collection::fix_point_collection()
  * Destructs the collection and releases all its resources.
  */
 fix_point_collection::~fix_point_collection() {
-    delete[] m_coll;
+//    delete[] m_coll;
 }
 
 /**
@@ -84,6 +87,7 @@ fix_point& fix_point_collection::operator[](int index) {
     if (index < 0 || m_size <= index) {
         throw "Index out of bounds";
     }
+    cout << "called non-const []  --> at " << index << ": " << float(m_coll[index]) << endl;
     return m_coll[index];
 }
 
@@ -100,8 +104,7 @@ size_t fix_point_collection::size() const {
  */
 size_t count_value(fix_point_collection &coll, fix_point value) {
     int count = 0;
-    int size = int(coll.size());
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < coll.size(); i++) {
         if (coll[i] == value) {
             count++;
         }
@@ -114,8 +117,7 @@ size_t count_value(fix_point_collection &coll, fix_point value) {
  */
 fix_point sum(fix_point_collection &coll) {
     fix_point sum = 0.f;
-    int size = int(coll.size());
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < coll.size(); i++) {
         sum += coll[i];
     }
     return sum;

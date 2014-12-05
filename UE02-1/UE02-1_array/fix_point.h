@@ -11,7 +11,7 @@ public:
     fix_point(double d);
 
     fix_point operator=(float f);
-//    bool operator==(fix_point other) const;
+    bool operator==(fix_point other) const;
     bool operator==(float other) const;
     bool operator==(double other) const;
     bool operator!=(fix_point other) const;

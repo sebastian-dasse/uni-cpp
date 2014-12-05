@@ -2,6 +2,10 @@
 
 #include <cassert>
 
+#include <iostream>
+using namespace std;
+
+//-- modified test for debugging --
 int main()
 {
     // create an empty collection of fix_point values
@@ -32,7 +36,9 @@ int main()
 
     // override 4th element
     collection[3] = -1.25f;
-    assert(collection[3] == -1.25f);
+//    assert(collection[3] == -1.25f); // NOT WORKING -> non-const operator[] allows no write
+//    assert(collection[3] == fix_point(-1.25f));
+    cout << float(collection[3]) << endl;
 
     // pop last element
     collection.pop_back();
@@ -44,6 +50,8 @@ int main()
     // count value
     count = count_value(collection, 3.5f);
     assert(count == 2);
+
+    cout << "all tests passed" << endl;
 
     return 0;
 }

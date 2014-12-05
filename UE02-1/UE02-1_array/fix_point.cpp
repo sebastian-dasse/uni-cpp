@@ -26,9 +26,9 @@ fix_point fix_point::operator=(float f) {
     return fix_point(f);
 }
 
-//bool fix_point::operator==(fix_point other) const {
-//    return m_data == other.m_data;
-//}
+bool fix_point::operator==(fix_point other) const {
+    return m_data == other.m_data;
+}
 
 bool fix_point::operator==(float other) const {
     return *this == fix_point(other);
