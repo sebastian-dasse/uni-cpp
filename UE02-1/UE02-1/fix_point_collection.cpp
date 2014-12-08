@@ -34,7 +34,7 @@ void fix_point_collection::push_back(fix_point val) {
  */
 fix_point fix_point_collection::pop_back() {
     if (m_size == 0) {
-        throw "Underflow: cannot pop back from an empty";
+        throw "Underflow: cannot pop back from an empty collection";
     }
     fix_point fp = m_coll->val;
     node *oldNode = m_coll;

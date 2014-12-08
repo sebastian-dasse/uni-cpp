@@ -13,6 +13,7 @@ fix_point_collection::fix_point_collection()
  * Destructs the collection and releases all its resources.
  */
 fix_point_collection::~fix_point_collection() {
+    // FIXME --> destrucor should free memory, but throws error this way:
 //    delete[] m_coll;
 }
 
