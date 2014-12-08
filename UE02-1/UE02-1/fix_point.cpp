@@ -1,5 +1,6 @@
-//#include <cstdint>
+#include <cmath>
 #include "fix_point.h"
+
 
 static const int Q = 16; // number of bits of the fractional part
 static const int Q_ONE = 1 << Q; // 1 expressed as 2**Q
@@ -10,20 +11,22 @@ static const fix_point PI_HALF = PI * fix_point(0.5f);
 static const fix_point THREE_TIMES_PI_HALF = PI * fix_point(1.5f);
 static const fix_point TWO_TIMES_PI = PI * fix_point(2.f);
 
-// TODO okay to have standard constructor???
-fix_point::fix_point() {}
+// default constructor - necessary for node, used in fix_point_collection
+fix_point::fix_point()
+    : m_data(0) {}
 
 fix_point::fix_point(float f)
-    : m_data(std::int32_t(f * Q_ONE)) {}
+    : m_data(std::int32_t(round(f * Q_ONE))) {}
 
 fix_point::fix_point(double f)
-    : m_data(std::int32_t(f * Q_ONE)) {}
+    : m_data(std::int32_t(round(f * Q_ONE))) {}
 
-fix_point::fix_point(std::int32_t data)
+fix_point::fix_point(std::int32_t data, intern flag)
     : m_data(data) {}
 
 fix_point fix_point::operator=(float f) {
-    return fix_point(f);
+    m_data = std::int32_t(round(f * Q_ONE));
+    return *this;
 }
 
 bool fix_point::operator==(fix_point other) const {
@@ -59,35 +62,39 @@ bool fix_point::operator>=(fix_point other) const {
 }
 
 fix_point fix_point::operator+(fix_point other) const {
-    return fix_point(m_data) += other;
+    return fix_point(m_data, intern()) += other;
 }
 
 fix_point fix_point::operator+=(fix_point other) {
-    return m_data += other.m_data;
+    m_data += other.m_data;
+    return *this;
 }
 
 fix_point fix_point::operator-(fix_point other) const {
-    return fix_point(m_data) -= other;
+    return fix_point(m_data, intern()) -= other;
 }
 
 fix_point fix_point::operator-=(fix_point other) {
-    return m_data -= other.m_data;
+    m_data -= other.m_data;
+    return *this;
 }
 
 fix_point fix_point::operator*(fix_point other) const {
-    return fix_point(m_data) *= other;
+    return fix_point(m_data, intern()) *= other;
 }
 
 fix_point fix_point::operator*=(fix_point other) {
-    return m_data = std::int32_t( (std::int64_t(m_data) * std::int64_t(other.m_data)) >> Q );
+    m_data = std::int32_t( (std::int64_t(m_data) * std::int64_t(other.m_data)) >> Q );
+    return *this;
 }
 
 fix_point fix_point::operator/(fix_point other) const {
-    return fix_point(m_data) /= other;
+    return fix_point(m_data, intern()) /= other;
 }
 
 fix_point fix_point::operator/=(fix_point other) {
-    return m_data = std::int32_t( (std::int64_t(m_data) << Q) / std::int64_t(other.m_data) );
+    m_data = std::int32_t( (std::int64_t(m_data) << Q) / std::int64_t(other.m_data) );
+    return *this;
 }
 
 fix_point::operator float() const {
@@ -107,35 +114,38 @@ float fix_point::frac() const {
 }
 
 fix_point fix_point::operator++() {
-    return m_data += Q_ONE;
+    m_data += Q_ONE;
+    return *this;
 }
 
 fix_point fix_point::operator++(int) {
-    fix_point tmp = fix_point(m_data);
+    fix_point tmp = fix_point(m_data, intern());
     m_data += Q_ONE;
     return tmp;
 }
 
 fix_point fix_point::operator--() {
-    return m_data -= Q_ONE;
+    m_data -= Q_ONE;
+    return *this;
 }
 
 fix_point fix_point::operator--(int) {
-    fix_point tmp = fix_point(m_data);
+    fix_point tmp = fix_point(m_data, intern());
     m_data -= Q_ONE;
     return tmp;
 }
 
-fix_point fix_point::operator-() {
-    return -m_data;
+fix_point fix_point::operator-() const{
+    return fix_point(-m_data, intern());
 }
 
 fix_point fix_point::operator%(fix_point other) const {
-    return fix_point(m_data) %= other.m_data;
+    return fix_point(m_data, intern()) %= other;
 }
 
 fix_point fix_point::operator%=(fix_point other) {
-    return m_data %= other.m_data;
+    m_data %= other.m_data;
+    return *this;
 }
 
 fix_point fix_point::pow(int exp) const {

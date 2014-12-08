@@ -1,5 +1,6 @@
 #include "fix_point_collection.h"
 
+
 /**
  * Constructs an empty collection.
  */
@@ -66,6 +67,18 @@ const fix_point& fix_point_collection::operator[](int index) const {
     return n->val;
 }
 
+node* fix_point_collection::getPtrFor(int index) const {
+    if (index < 0 || m_size <= index) {
+        throw "Index out of bounds";
+    }
+    node *n = m_coll;
+    index++;
+    for ( ; index < m_size; index++) {
+        n = n->next;
+    }
+    return n;
+}
+
 /**
  * Returns the value resulting from linear interpolation between
  * the two elements at the indices closest to the specified
@@ -75,10 +88,14 @@ fix_point fix_point_collection::operator[](fix_point index) const {
     if (index < fix_point(0.f) || fix_point(m_size-1.f) < index) {
         throw "Index out of bounds";
     }
-    int left = index.floor();
-    int right = left + 1;
-    fix_point f = index.frac();
-    return (fix_point(1.f) - f) * (*this)[left] + f * (*this)[right];
+    int leftIndex = index.floor();
+    fix_point factor = index.frac();
+    node* right = getPtrFor(leftIndex + 1);
+    node* left = right->next;
+    return (fix_point(1.f) - factor) * left->val + factor * right->val;
+
+    //-- the inefficient way to do it:
+//    return (fix_point(1.f) - f) * (*this)[left] + f * (*this)[right];
 }
 
 /**
@@ -109,7 +126,7 @@ size_t fix_point_collection::size() const {
  */
 size_t count_value(fix_point_collection &coll, fix_point value) {
     int count = 0;
-    for (node *n = coll.m_coll; n != nullptr; n++) {
+    for (node *n = coll.m_coll; n != nullptr; n = n->next) {
         if (n->val == value) {
             count++;
         }
@@ -122,7 +139,7 @@ size_t count_value(fix_point_collection &coll, fix_point value) {
  */
 fix_point sum(fix_point_collection &coll) {
     fix_point sum = 0.f;
-    for (node *n = coll.m_coll; n != nullptr; n++) {
+    for (node *n = coll.m_coll; n != nullptr; n = n->next) {
         sum += n->val;
     }
     return sum;

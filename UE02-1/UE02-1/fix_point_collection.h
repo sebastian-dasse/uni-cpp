@@ -6,6 +6,7 @@
 
 using std::size_t;
 
+
 struct node {
     fix_point val;
     node *next;
@@ -62,6 +63,8 @@ public:
 private:
     node *m_coll;
     int m_size;
+
+    node* getPtrFor(int index) const;
 };
 
 /**

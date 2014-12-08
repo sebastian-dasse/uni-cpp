@@ -4,9 +4,11 @@
 #define FIX_POINT_H
 
 
+struct intern {};
+
 class fix_point {
 public:
-    fix_point();
+    fix_point(); // default constructor
     fix_point(float f);
     fix_point(double d);
 
@@ -35,13 +37,13 @@ public:
     fix_point operator++(int);
     fix_point operator--();
     fix_point operator--(int);
-    fix_point operator-();
+    fix_point operator-() const;
     fix_point operator%(fix_point other) const;
     fix_point operator%=(fix_point other);
     fix_point pow(int exp) const;
 private:
     std::int32_t m_data;
-    fix_point(std::int32_t data);
+    fix_point(std::int32_t data, intern flag);
 };
 
 

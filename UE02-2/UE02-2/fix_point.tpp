@@ -12,9 +12,10 @@
 ////static const fix_point THREE_TIMES_PI_HALF = PI * fix_point(1.5f);
 ////static const fix_point TWO_TIMES_PI = PI * fix_point(2.f);
 
-// TODO okay to have standard constructor???
+// standard constructor?
 //template<int L, int R>
-//fix_point<L, R>::fix_point() {}
+//fix_point<L, R>::fix_point()
+//    : m_data(0) {}
 
 template<int L, int R>
 fix_point<L, R>::fix_point(float f)
@@ -25,12 +26,13 @@ fix_point<L, R>::fix_point(double f)
     : m_data(Type(round(f * Q_ONE))) {}
 
 template<int L, int R>
-fix_point<L, R>::fix_point(Type data)
+fix_point<L, R>::fix_point(Type data, intern flag)
     : m_data(data) {}
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator=(float f) {
-    return fix_point(f);
+    m_data = Type(round(f * Q_ONE));
+    return *this;
 }
 
 template<int L, int R>
@@ -75,42 +77,46 @@ bool fix_point<L, R>::operator>=(fix_point other) const {
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator+(fix_point other) const {
-    return fix_point(m_data) += other;
+    return fix_point(m_data, intern()) += other;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator+=(fix_point other) {
-    return m_data += other.m_data;
+    m_data += other.m_data;
+    return *this;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator-(fix_point other) const {
-    return fix_point(m_data) -= other;
+    return fix_point(m_data, intern()) -= other;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator-=(fix_point other) {
-    return m_data -= other.m_data;
+    m_data -= other.m_data;
+    return *this;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator*(fix_point other) const {
-    return fix_point(m_data) *= other;
+    return fix_point(m_data, intern()) *= other;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator*=(fix_point other) {
-    return m_data = Type( (DoubleType(m_data) * DoubleType(other.m_data)) >> Q );
+    m_data = Type( (DoubleType(m_data) * DoubleType(other.m_data)) >> Q );
+    return *this;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator/(fix_point<L, R> other) const {
-    return fix_point(m_data) /= other;
+    return fix_point(m_data, intern()) /= other;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator/=(fix_point<L, R> other) {
-    return m_data = Type( (DoubleType(m_data) << Q) / DoubleType(other.m_data) );
+    m_data = Type( (DoubleType(m_data) << Q) / DoubleType(other.m_data) );
+    return *this;
 }
 
 template<int L, int R>
@@ -136,42 +142,44 @@ float fix_point<L, R>::frac() const {
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator++() {
-    return m_data += Q_ONE;
+    m_data += Q_ONE;
+    return *this;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator++(int) {
-    fix_point tmp = fix_point(m_data);
+    fix_point tmp = fix_point(m_data, intern());
     m_data += Q_ONE;
     return tmp;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator--() {
-    return m_data -= Q_ONE;
+    m_data -= Q_ONE;
+    return *this;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator--(int) {
-    fix_point tmp = fix_point(m_data);
+    fix_point tmp = fix_point(m_data, intern());
     m_data -= Q_ONE;
     return tmp;
 }
 
 template<int L, int R>
-fix_point<L, R> fix_point<L, R>::operator-() {
-    m_data = -m_data;
-    return m_data;
+fix_point<L, R> fix_point<L, R>::operator-() const {
+    return fix_point(-m_data, intern());
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator%(fix_point other) const {
-    return fix_point(m_data) %= other.m_data;
+    return fix_point(m_data, intern()) %= other;
 }
 
 template<int L, int R>
 fix_point<L, R> fix_point<L, R>::operator%=(fix_point other) {
-    return m_data %= other.m_data;
+    m_data %= other.m_data;
+    return *this;
 }
 
 template<int L, int R>

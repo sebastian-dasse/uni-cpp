@@ -1,5 +1,6 @@
-//#include <cstdint>
+#include <cmath>
 #include "fix_point.hpp"
+
 
 static const int Q = 16; // number of bits of the fractional part
 static const int Q_ONE = 1 << Q; // 1 expressed as 2**Q
@@ -11,14 +12,14 @@ static const fix_point THREE_TIMES_PI_HALF = PI * fix_point(1.5f);
 static const fix_point TWO_TIMES_PI = PI * fix_point(2.f);
 
 // TODO okay to have standard constructor? --> necessary for arrays?
-fix_point::fix_point()
-    : m_data(std::int32_t(Q_ONE)) {}
+//fix_point::fix_point()
+//    : m_data(std::int32_t(Q_ONE)) {}
 
 fix_point::fix_point(float f)
-    : m_data(std::int32_t(f * Q_ONE)) {}
+    : m_data(std::int32_t(round(f * Q_ONE))) {}
 
 fix_point::fix_point(double f)
-    : m_data(std::int32_t(f * Q_ONE)) {}
+    : m_data(std::int32_t(round(f * Q_ONE))) {}
 
 fix_point::fix_point(std::int32_t data)
     : m_data(data) {}

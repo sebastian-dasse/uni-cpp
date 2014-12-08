@@ -1,7 +1,5 @@
 #include "fix_point_collection.h"
 
-#include <iostream>
-using namespace std;
 
 /**
  * Constructs an empty collection.
@@ -13,8 +11,7 @@ fix_point_collection::fix_point_collection()
  * Destructs the collection and releases all its resources.
  */
 fix_point_collection::~fix_point_collection() {
-    // FIXME --> destrucor should free memory, but throws error this way:
-//    delete[] m_coll;
+    delete[] m_coll;
 }
 
 /**
@@ -88,7 +85,6 @@ fix_point& fix_point_collection::operator[](int index) {
     if (index < 0 || m_size <= index) {
         throw "Index out of bounds";
     }
-    cout << "called non-const []  --> at " << index << ": " << float(m_coll[index]) << endl;
     return m_coll[index];
 }
 

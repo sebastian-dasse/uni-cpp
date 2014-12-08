@@ -5,6 +5,7 @@
 
 
 struct fix_point {
+//    fix_point();
     fix_point(float f);
     fix_point(double d);
 

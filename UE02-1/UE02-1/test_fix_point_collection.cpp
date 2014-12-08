@@ -40,11 +40,10 @@ int main()
     // check size
     size = collection.size();
     assert(size == 4);
-  
+
     // count value
     count = count_value(collection, 3.5f);
     assert(count == 2);
 
     return 0;
 }
-
