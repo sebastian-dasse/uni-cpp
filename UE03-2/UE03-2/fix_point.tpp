@@ -13,9 +13,9 @@
 ////static const fix_point TWO_TIMES_PI = PI * fix_point(2.f);
 
 // standard constructor?
-//template<int L, int R>
-//fix_point<L, R>::fix_point()
-//    : m_data(0) {}
+template<int L, int R>
+fix_point<L, R>::fix_point()
+    : m_data(0) {}
 
 template<int L, int R>
 fix_point<L, R>::fix_point(float f)

@@ -24,7 +24,7 @@ public:
     static const int pre_point_bits = L;
     static const int post_point_bits = R;
 
-//    fix_point(); // standard constructor?
+    fix_point(); // standard constructor?
     fix_point(float f);
     fix_point(double d);
 
