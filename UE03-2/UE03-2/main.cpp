@@ -2,13 +2,9 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <future>
 #include <chrono>
 #include <functional>
-#include <string>
-#include <cstdio>
-#include <utility>
-#include <tuple>
-#include <future>
 #include "fix_point.hpp"
 
 using namespace std;
@@ -18,88 +14,51 @@ static const int NUM_ELEMENTS = 1 << 16;
 
 std::mutex sum_mutex;
 
-struct Slice {
-    using ite = const fix_point_vec::iterator;
-    ite begin1;
-    ite begin2;
-    ite end1;
-    ite end2;
-    Slice(ite b1, ite e1, ite b2, ite e2) : begin1(b1), end1(e1), begin2(b2), end2(e2) {}
-};
-
-
-void calc_threads(fix_point<16, 16>& sum, Slice slice) {
-    fix_point<16, 16> sliceSum = 0.f;
-    for (auto it1 = slice.begin1, it2 = slice.begin2; it1 != slice.end1; it1++, it2++) {
-        sliceSum += *it1 * *it2;
-    }
-    sum_mutex.lock();
-    sum += sliceSum;
-    sum_mutex.unlock();
-}
-
 fix_point<16, 16> dot_product_threads(fix_point_vec& v1, fix_point_vec& v2) {
     const auto numThreads = std::thread::hardware_concurrency();
     fix_point<16, 16> sum(0.f);
-//    std::vector<std::thread> threads;
     std::thread threads[numThreads];
+//    std::vector<std::thread> threads;
     for (int i = 0; i < int(numThreads); i++) {
         int lo = i * v1.size() / numThreads;
         int hi = (i+1) * v1.size() / numThreads;
-        Slice slice(v1.begin() + lo,
-                    v1.begin() + hi,
-                    v2.begin() + lo,
-                    v2.begin() + hi);
-//        threads.emplace_back( calc_threads, std::ref(sum), slice );
-        threads[i] = std::thread(calc_threads, std::ref(sum), slice);
-//        cout << "thread #" << i << " created (" << lo << ", " << hi << ")" << endl;
+        threads[i] = std::thread([&](int hi, int lo){
+//        threads.emplace_back([&](int hi, int lo){
+            fix_point<16, 16> sliceSum = 0.f;
+            for (auto it1 = v1.begin() + lo, it2 = v2.begin() + lo; it1 != v1.begin() + hi; it1++, it2++) {
+                sliceSum += *it1 * *it2;
+            }
+            sum_mutex.lock();
+            sum += sliceSum;
+            sum_mutex.unlock();
+        }, hi, lo);
     }
-
     for (auto &thread: threads) {
         thread.join();
-//        cout << "joined #" << i << endl;
     }
-//    for (int i = 0; i < int(numThreads); i++) {
-//        threads[i].join();
-//        cout << "joined #" << i << endl;
-//    }
     return sum;
-}
-
-fix_point<16, 16> calc_async(Slice slice) {
-    fix_point<16, 16> sliceSum = 0.f;
-    for (auto it1 = slice.begin1, it2 = slice.begin2; it1 != slice.end1; it1++, it2++) {
-        sliceSum += *it1 * *it2;
-    }
-    return sliceSum;
 }
 
 fix_point<16, 16> dot_product_async(fix_point_vec& v1, fix_point_vec& v2) {
     const auto numThreads = std::thread::hardware_concurrency();
     fix_point<16, 16> sum(0.f);
-    /*
-     * TODO
-     */
-
-//    std::vector< std::future< fix_point<16, 16> > > futures;
     std::future< fix_point<16, 16> > futures[numThreads];
+//    std::vector< std::future< fix_point<16, 16> > > futures;
     for (int i = 0; i < int(numThreads); i++) {
         int lo = i * v1.size() / numThreads;
         int hi = (i+1) * v1.size() / numThreads;
-        Slice slice(v1.begin() + lo,
-                    v1.begin() + hi,
-                    v2.begin() + lo,
-                    v2.begin() + hi);
-        futures[i] = std::async(std::launch::async, calc_async, slice);
-//        futures.push_back(std::async(std::launch::async, calc_async, slice));
-//        futures.emplace_back(std::launch::async, calc_async, slice );
-//        cout << "thread #" << i << " created (" << lo << ", " << hi << ")" << endl;
+//        futures.push_back(std::async(std::launch::async, [&](int hi, int lo){
+        futures[i] = std::async(std::launch::async, [&](int hi, int lo){
+            fix_point<16, 16> sliceSum = 0.f;
+            for (auto it1 = v1.begin() + lo, it2 = v2.begin() + lo; it1 != v1.begin() + hi; it1++, it2++) {
+                sliceSum += *it1 * *it2;
+            }
+            return sliceSum;
+        }, hi, lo);
     }
-
     for (auto &future : futures) {
         sum += future.get();
     }
-
     return sum;
 }
 
