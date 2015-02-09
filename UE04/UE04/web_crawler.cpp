@@ -70,42 +70,33 @@ boost::property_tree::ptree web_crawler::crawl(const std::string& rootUrl, int d
 }
 
 void web_crawler::crawl(int depth) {
-    std::cout << "Crawling " << m_rootUrl << " at depth " << depth << std::endl;
+    std::cout << "Start crawling at " << m_rootUrl << " with a depth of " << depth << std::endl;
 
     boost::property_tree::ptree child = crawl(m_rootUrl, depth);
     m_tree.add_child("page", child);
 
     std::cout << std::endl;
-    std::cout << "Found " << m_visitedUrls.size() << " new links." << std::endl;
+    std::cout << "Found " << m_visitedUrls.size() << " URLs." << std::endl;
 }
 
 void web_crawler::write_xml(const std::string& filename) {
-    boost::property_tree::ptree root;
-    root.add_child("page", m_tree);
     boost::property_tree::xml_writer_settings<std::string> settings(' ', 4);
-    boost::property_tree::write_xml(filename, root, std::locale(), settings);
+    boost::property_tree::write_xml(filename, m_tree, std::locale(), settings);
 }
 
 
 int main(int arg_num, char* args[]) {
-//    if (arg_num != 3) {
-//        std::cerr << "usage: web_crawler <url> <depth>" << std::endl;
-//        return 1;
-//    }
-//    std::string rootUrl = args[1];
-//    int depth = args[2];
+    if (arg_num != 3) {
+        std::cerr << "usage: web_crawler <url> <depth>" << std::endl;
+        return 1;
+    }
+    std::string rootUrl = args[1];
+    int depth = atoi(args[2]);
 
-//    std::string rootUrl = "www.boost.org";
-    std::string rootUrl = "http://www.boost.org";
-//    std::string rootUrl = "http://www.beuth-hochschule.de";
-//    std::string rootUrl = "http://de-de.facebook.com/BeuthHochschule";
-//    std::string rootUrl = "http://www.beuth-hochschule.de/rss";
-//    std::string rootUrl = "http://www.filmzentrale.com";
-
-    int depth = 5;
+//    std::string rootUrl = "http://www.boost.org";
+//    int depth = 3;
 
     web_crawler crawler(rootUrl);
-    crawler.crawl(depth);
     crawler.crawl(depth);
     crawler.write_xml("found_urls.xml");
 }
